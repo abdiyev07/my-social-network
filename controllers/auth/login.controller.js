@@ -1,4 +1,5 @@
 import User from '../../models/User.js'
+import jwt from 'jsonwebtoken'
 
 export default async (req, res) => {
   try {
@@ -26,6 +27,20 @@ export default async (req, res) => {
 
     // Домашнее задание 1. Завершить функционал логина: Возвращать нужно токен (вшить в токен user_id), user_id, posts, photos, friends
     // Домашнее задание 2. Реализовать middleware для авторизации
+
+    const token = jwt.sign({ user_id: user._id }, 'my-social-network', {
+      expiresIn: '72h',
+    })
+
+    res.json({
+      user: {
+        token,
+        user_id: user._id,
+        posts: user.posts,
+        photos: user.photos,
+        friends: user.friends,
+      },
+    })
   } catch (e) {
     console.log(e)
     res.status(500).json({ message: 'Произошла серверная ошибка...' })
